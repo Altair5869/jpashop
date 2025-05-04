@@ -11,14 +11,16 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
-    //test1
+
 
     private final MemberService memberService;
 
-    @GetMapping("/memebers/new")
+    @GetMapping("/members/new")
     public String createForm(Model model) {
         model.addAttribute("memberForm", new MemberForm());
         return "members/createMemberForm";
@@ -41,4 +43,14 @@ public class MemberController {
         return "redirect:/";
     }
 
+    @GetMapping("/members")
+    public String list(Model model) {
+        //Api를 만들 때는 Entity를 그대로 사용하면 안됨
+        //이유: 1.비밀번호 같은 보안이 필요한 값이 그대로 노출될 수 있음
+        //2. API 스펙이 변경되어 매우 불안정해질 수 있음
+
+        List<Member> members = memberService.findMembers();
+        model.addAttribute("members", members);
+        return "members/memberList";
+    }
 }
